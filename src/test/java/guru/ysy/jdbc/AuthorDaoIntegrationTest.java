@@ -16,7 +16,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
  */
 @ActiveProfiles("local")
 @DataJpaTest
-@ComponentScan(basePackages = "guru.ysy.jdbc.dao")
+@ComponentScan(basePackages = {"guru.ysy.jdbc.dao"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class AuthorDaoIntegrationTest {
 
@@ -27,7 +27,6 @@ public class AuthorDaoIntegrationTest {
     void testGetAuthorById() {
         Author author = authorDao.getById(1L);
         assertThat(author).isNotNull();
-
     }
 
     @Test

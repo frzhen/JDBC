@@ -1,6 +1,7 @@
 package guru.ysy.jdbc.dao;
 
 import guru.ysy.jdbc.domain.Author;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by zhenrui on 2021/11/26 22:51
