@@ -57,7 +57,7 @@ public class AuthorDaoImpl implements AuthorDao {
 
         try {
             connection = source.getConnection();
-            ps = connection.prepareStatement("SELECT first_name, last_name FROM author where first_name = ? AND " +
+            ps = connection.prepareStatement("SELECT * FROM author where first_name = ? AND " +
                                              "last_name = ? ");
             ps.setString(1, firstName);
             ps.setString(2, lastName);
