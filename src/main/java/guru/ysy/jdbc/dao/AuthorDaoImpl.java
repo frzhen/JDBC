@@ -1,7 +1,6 @@
 package guru.ysy.jdbc.dao;
 
 import guru.ysy.jdbc.domain.Author;
-import guru.ysy.jdbc.dao.AuthorDao;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -16,7 +15,6 @@ public class AuthorDaoImpl implements AuthorDao {
     private final DataSource source;
 
     public AuthorDaoImpl(DataSource source) {
-
         this.source = source;
     }
 
@@ -46,22 +44,7 @@ public class AuthorDaoImpl implements AuthorDao {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-//                if (statement != null) {
-//                    statement.close();
-//                }
-                if (connection != null) {
-                    connection.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            conClose(connection,ps,resultSet);
         }
         return null;
     }
@@ -91,20 +74,24 @@ public class AuthorDaoImpl implements AuthorDao {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            conClose(connection,ps,resultSet);
         }
         return null;
+    }
+
+    private void conClose(Connection connection, PreparedStatement preparedStatement, ResultSet resultSet) {
+        try {
+            if (connection != null) {
+                connection.close();
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
