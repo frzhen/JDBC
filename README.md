@@ -10,3 +10,7 @@ You can access the API documentation [here](https://sfg-beer-works.github.io/bre
 * Like Spring Framework Guru on [Facebook](https://www.facebook.com/springframeworkguru/)
 * Follow Spring Framework Guru on [Twitter](https://twitter.com/spring_guru)
 * Connect with John Thompson on [LinkedIn](http://www.linkedin.com/in/springguru)
+
+Main Branch: Baseline
+Pure-JDBC branch: Pure JDBC implementation of data access
+Spring-JDBC-Template: Utilizing JDBC Templates for data access
