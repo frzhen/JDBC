@@ -21,16 +21,13 @@ public class AuthorDaoImpl implements AuthorDao {
     @Override
     public Author getById(Long id) {
         Connection connection = null;
-//        Statement statement = null;
         PreparedStatement ps = null;
         ResultSet resultSet = null;
 
         try {
             connection = source.getConnection();
-//            statement = connection.createStatement();
-            ps = connection.prepareStatement("SELECT * FROM author where id = ?");
+            ps = connection.prepareStatement("SELECT * FROM author WHERE id = ?");
             ps.setLong(1,id);
-//            resultSet = statement.executeQuery("SELECT * FROM author where id = " + id);
             resultSet = ps.executeQuery();
 
             if (resultSet.next()) {
@@ -39,13 +36,18 @@ public class AuthorDaoImpl implements AuthorDao {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            closeAll(connection,ps,resultSet);
+            try {
+                closeAll(connection,ps,resultSet);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         }
         return null;
     }
 
     @Override
-    public Author getByName(String firstName, String lastName) {
+    public Author findAuthorByName(String firstName, String lastName) {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet resultSet = null;
@@ -64,7 +66,11 @@ public class AuthorDaoImpl implements AuthorDao {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            closeAll(connection,ps,resultSet);
+            try {
+                closeAll(connection,ps,resultSet);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
@@ -84,24 +90,56 @@ public class AuthorDaoImpl implements AuthorDao {
 
             Statement statement = connection.createStatement();
 
+            // This is a MySQL specific statement, not a best practice
             resultSet = statement.executeQuery("SELECT LAST_INSERT_ID()");
 
             if (resultSet.next()) {
-                Long saveId = resultSet.getLong(1);
-                return this.getById(saveId);
+                Long savedId = resultSet.getLong(1);
+                return this.getById(savedId);
             }
+
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            closeAll(connection,ps,resultSet);
+            try {
+                closeAll(connection, ps, resultSet);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
 
+    @Override
+    public Author updateAuthor(Author author) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = source.getConnection();
+            ps = connection.prepareStatement("UPDATE author SET first_name  = ?, last_name = ? WHERE author.id = ?");
+            ps.setString(1, author.getFirstName());
+            ps.setString(2, author.getLastName());
+            ps.setLong(3, author.getId());
+            ps.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                closeAll(connection,ps,resultSet);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return this.getById(author.getId());
+    }
+
     private void closeAll(Connection connection,
                           PreparedStatement preparedStatement,
-                          ResultSet resultSet) {
-        try {
+                          ResultSet resultSet) throws SQLException {
             if (connection != null) {
                 connection.close();
             }
@@ -111,9 +149,6 @@ public class AuthorDaoImpl implements AuthorDao {
             if (resultSet != null) {
                 resultSet.close();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     private Author getAuthorFromRS(ResultSet resultSet) throws SQLException {
