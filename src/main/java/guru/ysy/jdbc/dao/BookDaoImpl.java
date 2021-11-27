@@ -13,9 +13,11 @@ import java.sql.*;
 public class BookDaoImpl implements BookDao {
 
     private final DataSource source;
+    private final AuthorDao authorDao;
 
-    public BookDaoImpl(DataSource source) {
+    public BookDaoImpl(DataSource source, AuthorDao authorDao) {
         this.source = source;
+        this.authorDao = authorDao;
     }
 
     @Override
@@ -114,7 +116,12 @@ public class BookDaoImpl implements BookDao {
             ps.setString(1, book.getIsbn());
             ps.setString(2, book.getPublisher());
             ps.setString(3, book.getTitle());
-            ps.setLong(4, book.getAuthorId());
+
+            if (book.getAuthor() != null) {
+                ps.setLong(4, book.getAuthor().getId());
+            } else {
+                ps.setNull(4, -5);
+            }
             ps.execute();
 
             Statement stmt = conn.createStatement();
@@ -151,7 +158,9 @@ public class BookDaoImpl implements BookDao {
             ps.setString(1,book.getIsbn());
             ps.setString(2, book.getPublisher());
             ps.setString(3, book.getTitle());
-            ps.setLong(4, book.getAuthorId());
+            if (book.getAuthor() != null) {
+                ps.setLong(4, book.getAuthor().getId());
+            }
             ps.setLong(5, book.getId());
             ps.execute();
 
@@ -205,9 +214,9 @@ public class BookDaoImpl implements BookDao {
         Book book = new Book();
         book.setId(resultSet.getLong("id"));
         book.setTitle(resultSet.getString("title"));
-        book.setAuthorId(resultSet.getLong("author_id"));
         book.setPublisher(resultSet.getString("publisher"));
         book.setIsbn(resultSet.getString("isbn"));
+        book.setAuthor(authorDao.getById(resultSet.getLong("author_id")));
 
         return book;
     }

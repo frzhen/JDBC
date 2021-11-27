@@ -1,6 +1,7 @@
 package guru.ysy.jdbc;
 
 import guru.ysy.jdbc.dao.BookDao;
+import guru.ysy.jdbc.domain.Author;
 import guru.ysy.jdbc.domain.Book;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,10 @@ public class BookDaoIntegrationTest {
         book.setIsbn("1234");
         book.setPublisher("Unknown");
         book.setTitle("A Great Book");
-        book.setAuthorId(3L);
+
+        Author author = new Author();
+        author.setId(3L);
+        book.setAuthor(author);
         Book saved = bookDao.saveNewBook(book);
 
         assertThat(saved).isNotNull();
@@ -59,7 +63,11 @@ public class BookDaoIntegrationTest {
         book.setIsbn("1234");
         book.setPublisher("Unknown");
         book.setTitle("A Great Book");
-        book.setAuthorId(3L);
+
+        Author author = new Author();
+        author.setId(3L);
+
+        book.setAuthor(author);
         Book saved = bookDao.saveNewBook(book);
 
         saved.setTitle("The Greatest Book");
@@ -76,7 +84,6 @@ public class BookDaoIntegrationTest {
         book.setIsbn("1234");
         book.setPublisher("Unknown");
         book.setTitle("A Great Book");
-        book.setAuthorId(3L);
         Book saved = bookDao.saveNewBook(book);
 
         bookDao.deleteBookById(saved.getId());
