@@ -145,7 +145,7 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public void updateBook(Book book) {
+    public Book updateBook(Book book) {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -173,6 +173,8 @@ public class BookDaoImpl implements BookDao {
                 e.printStackTrace();
             }
         }
+
+        return getById(book.getId());
     }
 
     @Override
