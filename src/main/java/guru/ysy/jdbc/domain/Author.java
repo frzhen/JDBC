@@ -1,9 +1,7 @@
 package guru.ysy.jdbc.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Author {
@@ -14,6 +12,17 @@ public class Author {
 
     private String firstName;
     private String lastName;
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
+    }
+
+    @Transient
+    private List<Book> books;
 
     public Long getId() {
         return id;
